@@ -1,9 +1,9 @@
 package com.example.flickr_example
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,7 +16,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var viewAdapter: RecyclerView.Adapter<*>
     private lateinit var viewManager: RecyclerView.LayoutManager
-    private val data: MutableList<String> = mutableListOf()
+    private val data: MutableList<MyAdapter.PhotoObject> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,16 +24,19 @@ class MainActivity : AppCompatActivity() {
         val model = ViewModelProviders.of(this)[OverviewViewModel::class.java]
 
             model.properties.observe(this, Observer<SearchProperties> { searchResults ->
-                val urlList = searchResults.photos!!.photo.map { photo ->
-                    "https://live.staticflickr.com/${photo.server}/${photo.id}_${photo.secret}.jpg" }
+                val urlList: List<MyAdapter.PhotoObject> = searchResults.photos!!.photo.map { photo ->
+                    val url = "https://live.staticflickr.com/${photo.server}/${photo.id}_${photo.secret}.jpg"
+                    MyAdapter.PhotoObject(url , photo.id)
+                }
+
                 data.clear()
                 data.addAll(urlList)
                 viewAdapter.notifyDataSetChanged()
             })
 
         findViewById<Button>(R.id.button).setOnClickListener {
-            val textSample = findViewById<EditText>(R.id.editText).text.toString()
-            model.performSearch("", textSample)
+            val query = findViewById<EditText>(R.id.editText).text.toString()
+            model.performSearch(BuildConfig.API_KEY_FLICKR, query)
         }
 
         viewManager = LinearLayoutManager(this)
@@ -46,7 +49,6 @@ class MainActivity : AppCompatActivity() {
             layoutManager = viewManager
 
             adapter = viewAdapter
-
         }
     }
 }

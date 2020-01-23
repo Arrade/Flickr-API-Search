@@ -1,18 +1,19 @@
 package com.example.flickr_example
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 
-class MyAdapter(private val myDataset: List<String>) :
+class MyAdapter(private val photos: List<PhotoObject>) :
     RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
 
     class MyViewHolder(val imageView: ImageView) : RecyclerView.ViewHolder(imageView)
+    class PhotoObject(val url: String, val id: String)
 
-    override fun onCreateViewHolder(parent: ViewGroup,
-                                    viewType: Int): MyAdapter.MyViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val imageView = LayoutInflater.from(parent.context)
             .inflate(R.layout.image_layout, parent, false) as ImageView
 
@@ -23,9 +24,17 @@ class MyAdapter(private val myDataset: List<String>) :
 
         Glide
             .with(holder.imageView)
-            .load(myDataset[position])
+            .load(photos[position].url)
             .into(holder.imageView)
-    }
 
-    override fun getItemCount() = myDataset.size
+        holder.imageView.setOnClickListener {
+
+            val intent = Intent(holder.imageView.context, MoreInfo::class.java)
+
+            intent.putExtra("INTENT_KEY", photos[position].id)
+
+            holder.imageView.context.startActivity(intent)
+        }
+    }
+    override fun getItemCount() = photos.size
 }

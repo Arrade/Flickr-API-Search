@@ -5,8 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.flickr_example.network.ObjApi
 import com.example.flickr_example.network.jsontokotlin.SearchProperties
-import kotlinx.coroutines.*
-import java.lang.Exception
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 enum class CurrentApiStatus { LOADING, ERROR, DONE }
 
@@ -25,12 +27,12 @@ class OverviewViewModel : ViewModel() {
         viewModelJob + Dispatchers.Main
     )
 
-    fun performSearch(apikey: String, query: String) {
+    fun performSearch(apiKey: String, query: String) {
         coroutineScope.launch {
 
             try {
                 _status.value = CurrentApiStatus.LOADING
-                val searchProperties= ObjApi.retrofitService.search(apikey, query)
+                val searchProperties= ObjApi.retrofitService.search(apiKey, query)
                 _status.value = CurrentApiStatus.DONE
                 _properties.value = searchProperties
             } catch (e: Exception) {

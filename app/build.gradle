@@ -6,11 +6,11 @@ apply plugin: 'kotlin-android-extensions'
 
 apply plugin: 'kotlin-kapt'
 
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
 android {
     compileSdkVersion 29
-    dataBinding {
-        enabled = true
-    }
     buildToolsVersion "29.0.2"
     defaultConfig {
         applicationId "com.example.flickr_example"
@@ -24,6 +24,11 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField "String", "API_KEY_FLICKR", properties.getProperty('API_KEY_FLICKR')
+        }
+        debug {
+            minifyEnabled false
+            buildConfigField "String", "API_KEY_FLICKR", properties.getProperty('API_KEY_FLICKR')
         }
     }
 }

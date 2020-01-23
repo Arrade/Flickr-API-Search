@@ -1,6 +1,5 @@
 package com.example.flickr_example.network
 
-
 import com.example.flickr_example.network.jsontokotlin.SearchProperties
 import com.example.flickr_example.network.jsontokotlin.InfoProperties
 import retrofit2.Retrofit
@@ -26,7 +25,7 @@ private val retrofit = Retrofit.Builder()
 
 interface  ApiService {
     @GET("?method=flickr.photos.search&format=json&nojsoncallback=1")
-    suspend fun search(@Query("api_key") apikey: String, @Query("text") query: String): SearchProperties
+    suspend fun search(@Query("api_key") apiKey: String, @Query("text") query: String): SearchProperties
 
     @GET("?method=flickr.photos.getInfo&format=json&nojsoncallback=1")
     suspend fun info(@Query("api_key") apiKey: String, @Query("photo_id") id: String): InfoProperties
